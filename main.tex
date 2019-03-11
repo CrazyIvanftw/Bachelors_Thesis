@@ -4,6 +4,7 @@
 %\usepackage[titletoc, header, page]{appendix}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{authblk}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{graphicx}
 \usepackage[hyphens]{url}
@@ -117,21 +118,20 @@ Lund 2019
  
 %\lstset{style=mystyle}
 %\lstset{language=csh} 
-
-\author{
-	Gregory Austin \\
-	{\normalsize \href{mailto:Flavius.Gruian@cs.lth.se}{\texttt{Flavius.Gruian@cs.lth.se}}}
-%	\and
-%	Camilla Lekebjer \\
-%    {\normalsize \href{mailto:Camilla.Lekebjer@cs.lth.se}{\texttt{Camilla.Lekebjer@cs.lth.se}}}
-}
+%\author[1]{Alice Smith}
+%\author[2]{Bob Jones}
+%\affil[1]{Department of Mathematics, University X}
+%\affil[2]{Department of Biology, University Y}
+\author{Gregory Austin {\normalsize \href{mailto:sas10gau@student.lu.se}{\texttt{sas10gau@student.lu.se}}}}
 
 \title{Simulation of Sensor-Controlled Robotics}
-\subtitle{An Offline Programming Framework for Externally Guided Motion and Virtual Sensors in RobotStudio}
+\subtitle{An offline programming framework for sensor-control via externally guided motion in RobotStudio.}
 %\company{The Corporation AB LTD Inc}
-\supervisors{John Deer, \href{mailto:jdeer@company.com}{\texttt{jdeer@company.com}}}{Don Jeer, \href{mailto:djeer@xy.lth.se}{\texttt{djeer@xy.lth.se}}}
-%\supervisor{John Deer, \href{mailto:jdeer@company.com}{\texttt{jdeer@company.com}}}
-\examiner{Jane Doe, \href{mailto:jane.doe@cs.lth.se}{\texttt{jane.doe@cs.lth.se}}}
+%\thanks{\small{Department of Automatic Control, Lund University.}}
+\supervisor{Anders Robertsson, \small{Department of Automatic Control}\\ \href{mailto:anders.robertsson@control.lth.se}{\texttt{anders.robertsson@control.lth.se}}}
+%\thanks{\small{Department of Computer Science, Lund University}}
+\examiner{Mathias Haage,\small{Department of Computer Science}\\ \href{mailto:mathias.haage@cs.lth.se}{\texttt{mathias.haage@cs.lth.se}}}
+
 
 \date{\today}
 %\date{January 16, 2015}
@@ -311,7 +311,7 @@ RAPID is the programming language of ABB robots. RAPID code is stored and run on
 \label{sec:Tech_Back:Rob_Move:conventions}
 There are two main conventions used to describe the location of a robot. The first is to describe the angle of each joint of the robot . The second convention is to describe the \textit{position} and the \textit{orientation} of the robot. While both conventions are supported in the RobotWare-os, the work done in the project used the position and orientation convention exclusively. This section is intended to be a 'crash course' in how the convention is used in the RobotWare-os. 
 
-\subsection{Default frames for position, orientation in RobotWare}
+\subsection{Default frames for position and orientation in RobotWare}
 \label{sec:Tech_Back:Rob_Move:frames}
 When talking about a robot's position, the convention is to use a single point on the robot or a tool that is attached to the robot (usually the point at which work is being done). In RobotWare, this point is called the tool center point (TCP). The TCP could be the tip of a tool attached to the end of the robot or (in the absence of a tool) it could be the anchor point for tools on the robot. The coordinates of the TCP alone are not enough to describe robot movement, however. If the TCP is positioned at the coordinates (5,5,5), in which direction is the tool pointed? With only the position of the TCP, it is impossible to discern if the tool is pointing from the floor 'upward' to the point (5,5,5) or if the tool is pointing 'downward' from the ceiling. To solve this problem, an orientation is used to describe the specific rotation of the tool around the TCP. However, this raises the issue of how to describe orientation.\\
 The RobotWare-os starts addressing the issue by defining local coordinate systems for each object it works with in reference to a global coordinate system. These coordinate systems are called frames. There are many defined frames in both the virtual controllers in RobotStudio and the physical controllers \cite[Sec. 1.2.6]{ABB:robotstudio}, but for the purposes of understanding this project, only the frames of the TCP and the work object (Wobj) will be discussed.\\
@@ -581,7 +581,7 @@ Externally Guided Motion (EGM) is a RobotWare option. That means that EGM is sof
 
 \begin{figure}[H]
     \begin{center}
-    \tikzset{every picture/.append style={transform shape, scale=0.65}}
+    \tikzset{every picture/.append style={transform shape, scale=1.05}}
     \begin{sequencediagram}
     %\renewcommand\unitfactor{0.5}
         \newthread{rapid}{RAPID Program}{}
@@ -675,13 +675,14 @@ It is important to note that, because the robot is trying to converge to a targe
 
 \section{EGM Endpoints}
 \label{sec:EGM:Endpoints}
-An EGM endpoint is the destination of the robot system state data and the source for movement instructions bound for an EGM process. In order to interface with a robot controller via EGM, it is necessary for a programmer to implement an EGM endpoint. There are no restrictions on the functionality of the endpoint beyond the limitations of communicating with an EGM process. The limitations from the EGM process include: defined message structures (discussed in section \ref{sec:EGM:Message_Protos:proto_struct}), the three EGM modes, timing considerations, and requiring UDP as the transmission protocol. Beyond that, it is up to the programmer to implement the desired behavior of the EGM endpoint. There is a convention in ABB's documentation to refer to all EGM endpoints as 'sensors' \cite[Sec. 9.3.3]{ABB:controller_software}, but that convention will not be followed in this paper because it needs to maintain a distinction between the sensor mechanism and the software that handles UDP transmission of EGM protocol messages. ABB provides an example of an endpoint (egm-sensor.cs) in the RobotStudio files at \url{C:\ Users\ <user>\ AppData\ Local\ ABB Industrial IT\ Robotics IT\ RobotWare\ RobotWare_6.07.1011\ utility\ Template\ EGM\ }. In the folder, there are two versions of the example endpoint (one written in C++ and the other in C\#). The this project built upon the C\# example. 
+An EGM endpoint is the destination of the robot system state data and the source for movement instructions bound for an EGM process. In order to interface with a robot controller via EGM, it is necessary for a programmer to implement an EGM endpoint. There are no restrictions on the functionality of the endpoint beyond the limitations of communicating with an EGM process. The limitations from the EGM process include: defined message structures (discussed in section \ref{sec:EGM:Message_Protos:proto_struct}), the three EGM modes, timing considerations, and requiring UDP as the transmission protocol. Beyond that, it is up to the programmer to implement the desired behavior of the EGM endpoint. There is a convention in ABB's documentation to refer to all EGM endpoints as 'sensors' \cite[Sec. 9.3.3]{ABB:controller_software}, but that convention will not be followed in this paper because it needs to maintain a distinction between the sensor mechanism and the software that handles UDP transmission of EGM protocol messages. ABB provides an example of an endpoint (egm-sensor.cs) in the RobotStudio files at \url{ABB Industrial IT\ Robotics IT\ RobotWare\ RobotWare_6.07.1011\ utility\ Template\ EGM\ }. In the folder, there are two versions of the example endpoint (one written in C++ and the other in C\#). The this project built upon the C\# example. 
 
 \section{EGM RAPID Components}
 \label{sec:EGM:Rapid_Components}
 All EGM modes require some setup in the controller via RAPID commands. Examples of RAPID code for the different modes can be found in sections \ref{sec:EGM:Rapid_Programs:stream}, \ref{sec:EGM:Rapid_Programs:guidance}, and \ref{sec:EGM:Rapid_Programs:corr} for position stream, position guidance, and path correction respectively. The RAPID instructions used in this paper are briefly covered in figure \ref{fig:rapid_table} for reference: 
 
 \begin{figure}[H]
+\vspace{0.25cm}
     \centering
     \footnotesize{
     \begin{tabular}{| l | p{8cm} |}
@@ -713,18 +714,19 @@ All EGM modes require some setup in the controller via RAPID commands. Examples 
 In order to send EGM messages to an endpoint via UDP, an EGM process needs to know the IP address and port number of the endpoint. The robot controller maintains a library of 'transmission protocols' that can be called for use in a RAPID program. A transmission protocol consists of a name, type, serial port, IP address, and IP port number. E.g. an EGM endpoint that is listening on port 8080 on the localhost, the transmission protocol in figure \ref{fig:process_comm} could be called by an EGM process to communicate with that endpoint by referring to 'endpoint\_address'. For details of how to access the library of transmission protocols through RobotStudio, see section \ref{sec:Dev:I1:RobotStudio_setup} or appendix \ref{app:Screenshots:Trans_protocols}. 
 \begin{figure}[H]
     \centering
-    
+    \vspace{0.5cm}
     \begin{tabular}{|c|c|c|c|c|}
     \hline
-\tiny{\textbf{Name}} & \tiny{\textbf{Type}} & \tiny{\textbf{Serial Port}} & \tiny{\textbf{Remote Address}} & \tiny{\textbf{Remote Port Number}}\\ \hline
+\textbf{Name} & \textbf{Type} & \textbf{Serial Port} & \textbf{Remote Address} & \textbf{Remote Port Number}\\ \hline
 endpoint\_address & UdpUc & N/A & localhost & 8080 \\ \hline
     \end{tabular}
-    
     \caption{EGM process communication configuration example.}
     \label{fig:process_comm}
 \end{figure}
+\vspace{0.5cm}
 There are also several parameters that need to be configured for each EGM process. The robot controller also maintains a library of predefined configurations sets of these required parameters. When the EGM RobotWare-option is activated (see \ref{sec:Dev:I1:RobotStudio_setup}) there is one predefined parameter configuration called 'default'. For details about how to access and add more parameter configurations to this library via RobotStudio, see section \ref{sec:Dev:I1:RobotStudio_setup} or appendix \ref{app:Screenshots:EGM_in_controller}. The values of the 'default' configuration can be found in figure \ref{fig:process_config}. 
 \begin{figure}[H]
+\vspace{0.5cm}
     \centering
     \begin{tabular}{| l | c |}
     \hline
@@ -740,18 +742,22 @@ There are also several parameters that need to be configured for each EGM proces
     \caption{The default EGM process configuration.}
     \label{fig:process_config}
 \end{figure}
+\vspace{0.5cm}
 Before detailing the EGM process parameters, it is extremely important to provide a disclaimer concerning the validity of the information presented here. The information available regarding these parameters (taken from \cite[Sec. 9.3.2.5]{ABB:controller_software}, \cite[Sec. 9.3.4]{ABB:controller_software}, and \cite[Sec. 6.12]{ABB:system_parameters}) was not comprehensive enough to allow this paper to make many strong assertions of fact regarding their usage. Specifically, this paper will not assert that any claims made about the 'speed feed-forward' and 'speed reference' (as well as the affects that the process parameters have on them) are fact. It is clear that control signals for the servomotors are derived from messages sent by the EGM endpoint in some way and that these control signals are then passed through a control loop (see figure \ref{fig:lp_filter}). Unfortunately, information regarding either the mechanics of creating these control signals or the output of the control loop was not found. Consequently, several parts of the following explanation should be considered speculation. The decision to include this speculative information in the paper was made for two reasons. The first reason was that this speculative model of the control loop had predictive merit during the project (i.e. the result of changes to the parameters can be guess to some extent with this model). The second reason to include speculative information is to benefit any persons that might later use this project. It is possible that develop will continue on the work presented here. If this speculative model of the control loop is inaccurate, the assumptions that led to the erroneous model should be documented. Hopefully, documenting this speculation will help to diagnose and remedy any issues caused by the speculation. \par
 
-Most of these parameters affect how movement instructions are translated into motor control signals in the robot. The exceptions are the parameters 'Do Not Restart After Motors Off' and 'Return to Programmed Position when Stopped' which define what the robot will do after the EGM process is stopped. The remaining parameters are pertinent to servomotor control signals and the control loop (see figure \ref{fig:lp_filter}). There are three levels an EGM process can operate on: raw, filtering, and path. When set to raw, the movement instructions are translated directly into motor control signals and passed directly to the servo controller (i.e. no gain or filtering applied to the control signals). Setting the level to filtering adds gain to the servo control signals and passes them through a low pass filter. The path level is required for EGM processes in path correction mode. The default ramp time is a value between $0 \; s$ and $10 \; s$ which sets the default time it takes for a movement to stop (e.g. if a servo needs to rotate $180^{\circ}$ to fulfill a movement instruction: a $10 \; s$ ramp time will mean the servo will be set to run at $18^{\circ}/s$ or $0.05 \; Hz$). Proportional position gain is applied to the servo control signals over the course of the movement. The gain starts at its default and is decreased by the sensor as the motor nears its target rotation. The default proportional position gain can be a value between $0.0$ and $20.0$. E.g. a proportional gain of $5.0$ would mean that an an input signal of $0.05 \; Hz$ would be sent to the servo controller as $0.25 \; Hz$. The default low pass filter bandwidth is a value between $0.0 \; Hz$ and $100.0 \; Hz$. E.g. a bandwidth of $20.0 \; Hz$ would filter out the servo signals used as examples for the previous parameters. It should be mentioned that the example frequencies presented here are not typical values for servo signals that were chosen for the example to make the calculations strait forward. More detailed information on these system parameters can be found in \cite[Sec. 6.12]{ABB:system_parameters}. 
+Most of these parameters affect how movement instructions are translated into motor control signals in the robot. The exceptions are the parameters 'Do Not Restart After Motors Off' and 'Return to Programmed Position when Stopped' which define what the robot will do after the EGM process is stopped. The remaining parameters are pertinent to servomotor control signals and the control loop (see figure \ref{fig:lp_filter}). There are three levels an EGM process can operate on: raw, filtering, and path. When set to raw, the movement instructions are translated directly into motor control signals and passed directly to the servo controller (i.e. no gain or filtering applied to the control signals). Setting the level to filtering adds gain to the servo control signals and passes them through a low pass filter. The path level is required for EGM processes in path correction mode. The default ramp time is a value between $0 \; s$ and $10 \; s$ which sets the default time it takes for a movement to stop (e.g. if a servo needs to rotate $180^{\circ}$ to fulfill a movement instruction: a $10 \; s$ ramp time will mean the servo will be set to run at $18^{\circ}/s$ or $0.05 \; Hz$). Proportional position gain is applied to the servo control signals over the course of the movement. The gain starts at its default and is decreased by the sensor as the motor nears its target rotation. The default proportional position gain can be a value between $0.0$ and $20.0$. E.g. a proportional gain of $5.0$ would mean that an an input signal of $0.05 \; Hz$ would be sent to the servo controller as $0.25 \; Hz$. The default low pass filter bandwidth is a value between $0.0 \; Hz$ and $100.0 \; Hz$. E.g. a bandwidth of $20.0 \; Hz$ would filter out the servo signals used as examples for the previous parameters. It should be mentioned that the example frequencies presented here are not typical values for servo signals that were chosen for the example to make the calculations strait forward. More detailed information on these system parameters can be found in \cite[Sec. 6.12]{ABB:system_parameters}. \par
 
 \begin{figure}[H]
+\vspace{0.5cm}
     \centering
-    \includegraphics[width=8cm]{LP_filter_fig.png}
+    \includegraphics[width=12cm, height=6cm]{LP_filter_fig.png}
     \caption{Servo signal gain and filter during EGM \cite[Sec. 9.3.2.5]{ABB:controller_software}.}
     \label{fig:lp_filter}
 \end{figure}
 
+
 %!!!!!!!!!!!!!! EGM.PROTO !!!!!!!!!!!!!!!!!!!
+\newpage
 \section{EGM Message Protocols}
 \label{sec:EGM:Message_Protos}
 
@@ -771,25 +777,22 @@ A copy of the EGM message protocol (egm.proto) and its corresponding serializati
 
 \subsection{EGM message protocol structure}
 \label{sec:EGM:Message_Protos:proto_struct}
-The EGM message protocol (egm.proto) defines three primary message types: EgmRobot, EgmSensor, and EgmSensorPathCorr. The definitions and usage of these messages are  EGM process modes send robot state data to endpoints in the form of EgmRobot messages. Endpoints in turn send movement instructions to the controller in the form of EgmSensor or EgmSensorPathCorr messages. Because Google protocol buffer messages are intended to standardize data transfer in object-oriented languages, the structure of message protocols is similar to an  object-oriented class hierarchy. Therefore, the EGM message protocol will be presented using a slight variation on a class diagram. The protocol diagram in figure \ref{fig:egm_proto} describes the messages defined in egm.proto. Message types are represented as classes would be. Message types are defined by the submessages they contain. In the protocol diagram, submessages are analogous to class attributes and are listed in 'name:type' format. A submessage can be either a base data type (e.g. int, bool, double) or another message type. When a submessage is a message type, the definition of the submessage type is connected to the message with an association arrow. The modifiers on the submessage fields in figure \ref{fig:egm_proto} (and other message protocol diagrams in the paper) do not describe the accessibility of the field as they would in standard UML. In this case, the modifiers describe the requirement level of a submessage. The requirement level modifiers used are $+$, $-$, and \& which denote optional, required, and repeated submessages respectively. In the case of a submessage of type 'enum', the enumerated names and values included in the message's bottom section (where class methods would be in a class diagram).
+The EGM message protocol (egm.proto) defines three main message types: EgmRobot, EgmSensor, and EgmSensorPathCorr. The definitions and usage of these messages are dependant on the EGM process mode. Processes send robot state data to endpoints in the form of EgmRobot messages. Endpoints in turn send movement instructions to the controller in the form of EgmSensor or EgmSensorPathCorr messages. Because Google protocol buffer messages are intended to standardize data transfer in object-oriented languages, the structure of message protocols is similar to an  object-oriented class hierarchy. Therefore, the EGM message protocol will be presented using a slight variation on a class diagram. The protocol diagram in figure \ref{fig:egm_proto} describes the messages defined in egm.proto. Message types are represented as classes would be. Message types are defined by the submessages they contain. In the protocol diagram, submessages are analogous to class attributes and are listed in 'name:type' format. A submessage can be either a base data type (e.g. int, bool, double) or another message type. When a submessage is a message type, the definition of the submessage type is connected to the message with an association arrow. The modifiers on the submessage fields in figure \ref{fig:egm_proto} (and other message protocol diagrams in the paper) do not describe the accessibility of the field as they would in standard UML. In this case, the modifiers describe the requirement level of a submessage. The requirement level modifiers used are $+$, $-$, and \& which denote optional, required, and repeated submessages respectively. In the case of a submessage of type 'enum', the enumerated names and values included in the message's bottom section (where class methods would be in a class diagram). The decision was made to keep figure \ref{fig:egm_proto} a large size in order to make it easier for a programmer to referrer to while working with EGM messages.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=10cm]{egm_proto_v2.jpg}
+    \includegraphics[width=12cm]{egm_proto_v2.jpg}
     \caption{The message structure of the EGM protocols.}
     \label{fig:egm_proto}
 \end{figure}
 
-\subsection{EgmRobot: robot state data message protocol}
+
+\subsection{EgmRobot: robot state data protocol}
 \label{sec:EGM:Message_Protos:EgmRobot}
-When an EGM process sends state data to an EGM endpoint, an EgmRobot message is used (see figure \ref{fig:egm_proto} for the EgmRobot message protocol). To this point, the information sent to an endpoint has been broadly referred to as 'robot state data' or 'state data'. Before discussing how such messages can be used by an EGM endpoint (see section \ref{sec:EGM:Message_Protos:message_handling}), it would be useful to briefly summarize the 'state data' that is in an EgmRobot message. EgmRobot has nine sub messages. The submessages fall into three categories: header, robot system position data, and robot system state data. Broadly speaking, the position data should also be considered robot system state data. However, exclusively for the purposes of explaining the EgmRobot message protocol, it is useful to distinguish between 'position' and 'state' data. \par
-
-The header (header : EgmHeader) contains a sequence number (seqno : uint32), time stamp (tm : uint32) and message type (mtype : MessageType). The position data includes the current position of the robot system (feedBack : EgmFeedBack) and the next planned position (planned : EgmPlanned). The EgmFeedBack and EgmPlanned message protocols are identical and they contain information that corresponds to the information in the robtarget (see section \ref{sec:Tech_Back:Rob_Move:target_path}) RAPID data type. The EgmPlanned message is discussed in more detail in relation to the EgmSensor protocol (see section \ref{sec:EGM:Message_Protos:EgmSensor}). It is, however, worth noting that an EgmPlanned message contains a target slightly ahead of the TCP when it is a part of an EgmRobot message. When used in a EgmSensor message, the EgmPlanned submessage contains movement instructions. The state data is described by the remaining six submessages. The motor state (motorState : EgmMotorState) can be: undefined, on, or off. The EGM state (mciState : EgmMCIState) can be: undefined, error, stopped, or running. The EGM state of the EgmRobot message corresponds to the EGM process states (see figure \ref{fig:process_diagram}) in that a process transitioning from a connected to running state will correspond to the EgmMCIState transitioning from stopped to running. The convergence (mciConvergenceMet : bool) indicates if the current target has been reached by the robot or if motion towards the current target is ongoing. The test signals (testSignals : EgmTestSignals) are described in the comments of egm.proto as "[t]est signals". No further information on the use of the test signals was found. The RAPID execution state (rapidExecState : EgmRapidCtrlExecState) can be: undefined, stopped, or running. The measured force (measuredForce : EgmMeasuredForce) is described in the comments of egm.proto as an "[a]rray of 6 force values for a robot". It could be inferred that these values are meant to be the forces on the joints of a robot, but that is only speculation because no further information was found regarding the measured force and no non-zero values were ever observed to be sent from the virtual controllers used in this project. 
-
-
+When an EGM process sends state data to an EGM endpoint, an EgmRobot message is used (see figure \ref{fig:egm_proto} for the EgmRobot message protocol). To this point, the information sent to an endpoint has been broadly referred to as 'robot state data' or 'state data'. Before discussing how such messages can be used by an EGM endpoint (see section \ref{sec:EGM:Message_Protos:message_handling}), it would be useful to briefly summarize the 'state data' that is in an EgmRobot message. EgmRobot has nine sub messages. The submessages fall into three categories: header, robot system position data, and robot system state data. Broadly speaking, the position data should also be considered robot system state data. However, exclusively for the purposes of explaining the EgmRobot message protocol, it is useful to distinguish between 'position' and 'state' data. The header (header : EgmHeader) contains a sequence number (seqno : uint32), time stamp (tm : uint32) and message type (mtype : MessageType). The position data includes the current position of the robot system (feedBack : EgmFeedBack) and the next planned position (planned : EgmPlanned). The EgmFeedBack and EgmPlanned message protocols are identical and they contain information that corresponds to the information in the robtarget (section \ref{sec:Tech_Back:Rob_Move:target_path}) RAPID data type. The EgmPlanned message is discussed in more detail in relation to the EgmSensor protocol (see section \ref{sec:EGM:Message_Protos:EgmSensor}). It is, however, worth noting that an EgmPlanned message contains a target slightly ahead of the TCP when it is a part of an EgmRobot message. When used in a EgmSensor message, the EgmPlanned submessage contains movement instructions. The state data is described by the remaining six submessages. The motor state (motorState : EgmMotorState) can be: undefined, on, or off. The EGM state (mciState : EgmMCIState) can be: undefined, error, stopped, or running. The EGM state of the EgmRobot message corresponds to the EGM process states (figure \ref{fig:process_diagram}) in that a process transitioning from a connected to running state will correspond to the EgmMCIState transitioning from stopped to running. The convergence (mciConvergenceMet : bool) indicates if the current target has been reached by the robot or if motion towards the current target is ongoing. The test signals (testSignals : EgmTestSignals) are described in the comments of egm.proto as "[t]est signals". No further information on the use of the test signals was found. The RAPID execution state (rapidExecState : EgmRapidCtrlExecState) can be: undefined, stopped, or running. The measured force (measuredForce : EgmMeasuredForce) is described in the comments of egm.proto as an "[a]rray of 6 force values for a robot". It could be inferred that these values are meant to be forces on the robot joints, but that is speculation. No further information was found regarding the measured force and all values observed sent from the virtual controller were zero.
 
 \subsection{EGM message handling in endpoints}
 \label{sec:EGM:Message_Protos:message_handling}
-In this context of EGM, message handling involves: reading and writing the data of EGM messages, serialization and deserialization of EGM messages, and transmission of the serialized EGM messages. In any EGM endpoint, the state data being sent from the EGM process in the robot controller (i.e. state data in an EgmRobot message) will have to be handled. Depending on the mode, either an EgmSensor or EgmSensorPathCorr message will also need to be handled. E.g. a simple task in a C\# endpoint would be to create an array of doubles to hold the current x, y, and z coordinates of the TCP (see figure \ref{fig:parse_egmrobot} for the example). 
+In this context of EGM, message handling involves: reading and writing the data of EGM messages, serialization and deserialization of EGM messages, and transmission of the serialized EGM messages. In any EGM endpoint, the state data being sent from the EGM process in the robot controller (i.e. state data in an EgmRobot message) will have to be handled. Depending on the mode, either an EgmSensor or EgmSensorPathCorr message will also need to be handled. E.g. a simple task in a C\# endpoint would be to create an array of doubles to hold the current x, y, and z coordinates of the TCP (see figure \ref{fig:parse_egmrobot}). 
 
 \lstset{language=[Sharp]C}
 \begin{figure}[H]
@@ -797,32 +800,22 @@ In this context of EGM, message handling involves: reading and writing the data 
     \begin{lstlisting}
 using System.Net;
 using System.Net.Sockets;
-// The serialization file (egm.cs) was created from egm.proto
-// and its namespace abb.egm has EGM message handeling code.
 using abb.egm;      
-
-// Receive a byte[] from any IP address on a port for this endpoint
+// Receive byte[] from any IP address on a port
 UdpClient udpServer = new UdpClient(_portNbr);
 IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, _portNbr);
 byte[] data = udpServer.Receive(ref remoteEP);
-
 // De-serialize the byte[] into an instance of EgmRobot
-EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
-
+EgmRobot robot= EgmRobot.CreateBuilder().MergeFrom(data).Build();
 // Extract state data from the EgmRobot message
 double[] currentCoordinates = new double[] {
     robot.FeedBack.Cartesian.Pos.X,
     robot.FeedBack.Cartesian.Pos.Y,
-    robot.FeedBack.Cartesian.Pos.Z
-};
+    robot.FeedBack.Cartesian.Pos.Z};
 \end{lstlisting}
     \caption{Example of accessing state data from an EgmRobot message.}
     \label{fig:parse_egmrobot}
 \end{figure}
-
-In this example endpoint, a serialized EgmRobot message is transmitted to the endpoint via the udpServer, an instance of EgmRobot message is created by deserializing the data from the udpServer, and the position data is read from the message. \par
-
-As previously mentioned, there are two types of response message that an EGM endpoint sends back to its EGM process. When using position stream and position guidance, the EGM process expects a response in the form of an EgmSensor message. Path correction requires a response in the form of an EgmSensorPathCorr message. An example of building and serializing an EgmSensor message can be found in figure \ref{fig:build_egm_sensor}. The process of building and serializing an EgmSensorPathCorr message is the same as for an EgmSensor.
 
 \lstset{language=[Sharp]C}
 \begin{figure}[H]
@@ -835,14 +828,14 @@ EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
 EgmHeader.Builder hdr = new EgmHeader.Builder();
 // Set the data for the EgmHeader
 hdr.SetSeqno((uint)_seqNbr++)
-  .SetTm((uint)DateTime.Now.Ticks)
-  .SetMtype(EgmHeader.Types.MessageType.MSGTYPE_CORRECTION);
+ .SetTm((uint)DateTime.Now.Ticks)
+ .SetMtype(EgmHeader.Types.MessageType.MSGTYPE_CORRECTION);
 // Set EgmSensor.header <- EgmHeader message 
 sensor.SetHeader(hdr);
 // Builders for EgmPlanned, EgmPose, and EgmCartesian msg
 EgmPlanned.Builder planned = new EgmPlanned.Builder();
 EgmPose.Builder position = new EgmPose.Builder();
-EgmCartesian.Builder cartesian = new EgmCartesian.Builder();
+EgmCartesian.Builder cartesian=new EgmCartesian.Builder();
 // Set some data to send. The coordinates are given in mm.
 cartesian.SetX(1.111)
       .SetY(2.222)
@@ -853,16 +846,21 @@ sensor.SetPlanned(planned);
 // Finally, serialize the the EgmSensor message.
 EgmSensor serializedMessage = sensor.Build();
 \end{lstlisting}
-    \caption{Example of building, serializing, and transmitting an EgmSensor message.}
-    \label{fig:build_egm_sensor}
+\caption{Example of building, serializing, and transmitting an EgmSensor message.}
+\label{fig:build_egm_sensor}
 \end{figure}
+\vspace{0.5cm}
+In this example endpoint, a serialized EgmRobot message is transmitted to the endpoint via the udpServer, an instance of EgmRobot message is created by deserializing the data from the udpServer, and the position data is read from the message. As previously mentioned, there are two types of response message that an EGM endpoint sends back to its EGM process. When using position stream and position guidance, the EGM process expects a response in the form of an EgmSensor message. Path correction requires a response in the form of an EgmSensorPathCorr message. An example of building and serializing an EgmSensor message can be found in figure \ref{fig:build_egm_sensor}. The process of building and serializing an EgmSensorPathCorr message is the same as for an EgmSensor.
 
 
 
-\subsection{EgmSensor: movement instruction message protocol}
+
+
+\subsection{EgmSensor: movement instruction protocol}
 \label{sec:EGM:Message_Protos:EgmSensor}
-When programming an EGM endpoint (assuming that the connection with the EGM process is made and maintained) there is a finite set of values that can be sent to the robot controller. If the endpoint is communicating with an EGM process that is running in either position stream or position guidance mode, the message sent in an EgmSensor. The structure of EgmSensor messages can be found in figure \ref{fig:egm_sensor} below. \\
+When programming an EGM endpoint (assuming that the connection with the EGM process is made and maintained) there is a finite set of values that can be sent to the robot controller. If the endpoint is communicating with an EGM process that is running in either position stream or position guidance mode, the message sent in an EgmSensor. The structure of EgmSensor messages can be found in figure \ref{fig:egm_sensor} below. \par 
 \begin{figure}[H]
+\vspace{0.30cm}
     \centering
     \includegraphics[width=10cm]{egm_sensor_proto_spelling.jpg}
     \caption{The structure of EgmSensor messages.}
@@ -871,23 +869,18 @@ When programming an EGM endpoint (assuming that the connection with the EGM proc
 
 The header (header : EgmHeader) has three submessages: the sequence number (seqno : uint32), the time stamp (tm : uint32), and the message type (mtype : MessageType). Of the message data in the header, the robot controller only uses the message type. The sequence number and time stamp can be useful for debugging purposes, but they are not used by the controller. When communicating with an EGM process in position stream or position guidance mode, the message type should be set to {\scriptsize{MSGTYPE\_CORRECTION}}. When using Path Correction mode, the message type in the header of the EgmSensorPathCorr message should be set to {\scriptsize{MSGTYPE\_PATH\_CORRECTION}}.\par
 The message data for the movement instruction is contained in the planned submessage (planned : EgmPlanned). The movement instructions can be described by either using the joint values convention (joints  : EgmJoints) or using the position and orientation convention (cartesian : EgmPose). For information on robot motion conventions, see section \ref{sec:Tech_Back:Rob_Move}. EgmJoints are given in degrees as an array of 6 doubles. EgmPose contains submessages for position (pos : EgmCartesian) and orientation in either quaternions (orient : EgmQuarternion) or Euler angles (euler : EgmEuler). EgmCartesian messages contain x, y, and z submessages (x : double, y : double, z : double). The unit expected by the controller for the position values is  $mm$. If an EgmSensor message contains both quaternion and Euler angles, the virtual controller will prioritize the Euler angles. If no orientation is given, the controller will use the closest possible orientation to its current orientation. The planned submessage also includes fields for external joints (externalJoints : EgmJoints) and an absolute time (time : EgmClock). The external joint values are analogous to the extjoint data type in a robtarget in RAPID (section \ref{sec:Tech_Back:Rob_Move:target_path}). The time can be given in $s$ (sec : uint64) or $\mu s$ (usec : uint64) as an absolute number of $s$ or $\mu s$ since 1 Jan 1970. While such an absolute time could be useful in debugging, it is unclear if this field is utilized by the robot controller in any way. \par
+
 The final submessage of an EgmSensor message is a speed reference (speedRef : EgmSpeedRef). An EgmSpeedRef message contains two EgmJoint submessages (joints : EgmJoint) and (externalJoints : EgmJoint) as well as an EgmCartesianSpeed submessage (cartesians : EgmCartesianSpeed). According to the code comments in egm.proto, an EgmSpeedRef message is "speed reference values for robot (joint or cartesian) and additional axis (array of 6 values)" and an EgmCartesianSpeed message is "Array of 6 speed reference values in mm/s or degrees/s". While it is unclear exactly how the speedRef submessage is intended to be used from this documentation, speedRef is probably in reference to the 'Speed reference' label in figure \ref{fig:lp_filter}. \par
 
-\subsection{EgmSensorPathCorr: correction message protocol}
+\subsection{EgmSensorPathCorr: correction protocol}
 \label{sec:EGM:Message_Protos:EgmSensorPathCorr}
 EgmSensorPathCorr messages are used for EGM processes in path correction mode. The EgmSensorPathCorr message contains a header (header : EgmHeader) and corrections (pathCorr : EgmPathCorr). The header of an EgmSensorPathCorr should have the message type (mtype : MessageType) set to {\scriptsize{MSGTYPE\_PATH\_CORRECTION}}. The corrections are given as a position (pos : EgmCartesian). Only the y and z values of position are used by the robot controller (see section \ref{sec:EGM:Modes:corr} for more detail). There is also a submessage for age (age : uint32). It is unclear if the age is used by the controller, but according to the code comments in egm.proto age is the "sensor measurement age in ms". \par
 
 
 \section{RAPID programs for EGM modes}
 \label{sec:EGM:Rapid_Programs}
-The following code examples are based on the RAPID code examples provided for Position Stream \cite[Sec. 9.3.6.1]{ABB:controller_software}, Position Guidance \cite[Sec. 9.3.6.2]{ABB:controller_software} and Path Correction  \cite[Sec. 9.3.6.3]{ABB:controller_software}. They have been altered to use the same naming conventions as consistently as possible in each example. Unless otherwise stated, these examples will all assume the following setup:
-\begin{enumerate}
-    \item An EGM endpoint listening at localhost port: 8080 
-    \item A virtual controller named ROB\_1 in RobotStudio
-    \item RobotWare-option for EGM enabled for ROB\_1 
-    \item The transmission protocol presented in section \ref{sec:EGM:Process_Management} defined for ROB\_1: 
-    \item The 'default' EGM process configuration (see section \ref{sec:EGM:Process_Management})
-\end{enumerate}
+The following code examples are based on the RAPID code examples provided for Position Stream \cite[Sec. 9.3.6.1]{ABB:controller_software}, Position Guidance \cite[Sec. 9.3.6.2]{ABB:controller_software} and Path Correction  \cite[Sec. 9.3.6.3]{ABB:controller_software}. They have been altered to use the same naming conventions as consistently as possible in each example. Unless otherwise stated, these examples will all assume the following setup: an EGM endpoint listening at port 8080, a virtual controller named ROB\_1, the RobotWare-option for EGM enabled for ROB\_1, the transmission protocol presented in section \ref{sec:EGM:Process_Management} defined for ROB\_1, the 'default' EGM process configuration (see section \ref{sec:EGM:Process_Management})
+
 
 
 
@@ -902,52 +895,41 @@ Position streaming is used in situations where there is a need to "provide exter
 \begin{figure}[H]
     \centering
     \begin{lstlisting}
-! This example assumes the definition of these targets elsewhere.
 CONST robtarget Home;
 CONST robtarget Target_10;
 CONST robtarget Target_20;
-! Declare an EGM process called egmProc
 VAR egmident egmProc;
-
+! Main process
 PROC main()
-    ! Move robot to Home
     MoveL Home,v100,fine,tool0\WObj:=wobj0;
     ! Start the Stream procedure
     Stream;
 ENDPROC
-	
 ! The Path_10 procedure is just move instructions 
 PROC Path_10()
     MoveJ Target_10,v100,fine,tool0\WObj:=wobj0;
     MoveJ Target_20,v100,fine,tool0\WObj:=wobj0;
 ENDPROC
-	
 ! The EGM position stream procedure
 PROC Stream()
-    ! Instantiates an EGM process (egmProc)
     EGMGetId egmProc;
-    ! Starts egmProc with 'default' configuration and 
-    ! instructs the process to communicate with:
-    !   - the motion control process of ROB_1 and
-    !   - the EGM endpoint located at 'endpoint_address'
-    EGMSetupUC ROB_1, egmProc, "default", "endpoint_address"\Joint;
-    ! Instructs egmProc to stream with a sample rate of 16 ms
+    EGMSetupUC ROB_1, egmProc, "default", "endpoint_address"\Pose;
     EGMStreamStart egmProc\SampleRate:=16;
-    ! Run Path_10 procedure
     Path_10;
-    ! Instructs egmProc to stop streaming
     EGMStreamStop egmProc;
-    ! Stops egmProc
     EGMReset egmProc;
 ENDPROC
-    \end{lstlisting}
-    \caption{Example RAPID program for EGM Position Stream.}
-    \label{fig:rapid_pos_stream}
+
+\end{lstlisting}
+\caption{Example RAPID program for EGM Position Stream.}
+\label{fig:rapid_pos_stream}
 \end{figure}
 
+
 \begin{figure}[H]
+\vspace{2cm}
     \begin{center}
-    \tikzset{every picture/.append style={transform shape, scale=0.85}}
+    \tikzset{every picture/.append style={transform shape, scale=1.1}}
     \begin{sequencediagram}
         \newthread{rapid}{\scriptsize{ : RAPID Program}}{}
         \newinst{rob1}{\scriptsize{ROB\_1 : Motion Control}}{}
@@ -1001,7 +983,7 @@ ENDPROC
     \caption{Sequence diagram for EGM position Stream.}
     \label{fig:sequence_pos_stream}
 \end{figure}
-
+\vspace{1.5cm}
 It is worth noting that once EGMStreamStart egmProc\textbackslash SampleRate:=16 is called in the RAPID program, the EGM process starts a loop that gets and sends the robot state data every 16 $ms$. From start to return, a 'Move Instruction' that is called during Path\_10() can take seconds or minutes. That means that the state data will probably called many times while the robot is moving to any given target.
 %*******************************************************************
 
@@ -1014,9 +996,11 @@ It is worth noting that once EGMStreamStart egmProc\textbackslash SampleRate:=16
 \subsection{RAPID for EGM position guidance}
 \label{sec:EGM:Rapid_Programs:guidance}
 Setting up an EGM process to use for position guidance requires a few more steps. Because position guidance requires two way communication with an EGM endpoint, the robot controller will need to manage to the state of the EGM process. The \cite[Sec. 9.3.2.2]{ABB:controller_software} provides a state diagram for EGM processes that can be found in figure \ref{fig:process_diagram}. \par
+
+\vspace{2cm}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=8cm]{pic_process-state-diagram.png}
+    \includegraphics[width=9.5cm]{pic_process-state-diagram.png}
     \caption{EGM process state diagram.}
     \label{fig:process_diagram}
 \end{figure}
@@ -1029,11 +1013,11 @@ State management is relevant for position guidance (and path correction) because
 A RAPID program for position guidance with this structure can be found in figure \ref{fig:rapid_pos_guide}. The corresponding sequence diagram for the example program can be found in figure \ref{fig:sequence_pos_guide}.
 \lstset{language=RAPID}
 \begin{figure}[H]
-    \centering
-    \begin{lstlisting}
-! This example assumes the definition of these targets elsewhere.
+\vspace{0.75cm}
+\centering
+\begin{lstlisting}
+! Example assumes the definition of the Home.
 CONST robtarget Home;
-	
 ! Declare an EGM process called egmProc
 VAR egmident egmProc;
 VAR egmstate egmSt;
@@ -1067,7 +1051,6 @@ PROC runEGM()
         \x:=minmax_lin \y:=minmax_lin \z:=minmax_lin
         \rx:=minmax_rot \ry:=minmax_rot \rz:=minmax_rot
         \LpFilter:=2 \Samplerate:=4 \MaxSpeedDeviation:=2;
-
     EGMRunPose egmProc,EGM_STOP_HOLD \x \y \z
         \CondTime:=10 \RampInTime:=0.05 \RampOutTime:=0.05;
 ENDPROC
@@ -1078,22 +1061,21 @@ ENDPROC
 
 This program can be broken down into four distinct stages: robot setup, connection setup, position guidance setup, and position guidance execution. The robot setup stage requires that the robot be moved into a starting position. It is extremely important that this bust be a fine movement because the robot controller needs to know its starting position with the greatest degree of accuracy possible. If the move instruction is not a fine movement, the controller will simply not execute any EGM instructions in the RAPID code. \par
 
-Once the fine movement to a start position is complete, the connection setup can begin. Although it should not happen in this example program, it is possible that a given EGM process could still be in a state of {\scriptsize{EGM\_STATE\_RUNNING}} in a more complicated program. It is recommended good practice to reset EGM processes (EGMReset egmProc) before using them, but not required. The instruction 'EGMGetId egmProc' will instantiate an EGM process if one is not already bound to the name 'egmProc'. The function 'EGMGetState' will return the state of the EGM process. The condition that 'egmSt $<=$ {\scriptsize{EGM\_STATE\_CONNECTED}}' will be true if the state is {\scriptsize{EGM\_STATE\_DISCONNECTED}} or {\scriptsize{EGM\_STATE\_CONNECTED}} but will return false if the sate is {\scriptsize{EGM\_STATE\_RUNNING}}. Because this program forces a reset, the state will be {\scriptsize{EGM\_STATE\_DISCONNECTED}}. The connection to the EGM endpoint is setup with the instruction 'EGMSetupUC' in the same way as for position streaming. The option \textbackslash Pose is used here instead of the option \textbackslash Joint that was used in the position stream example. All this does is establish the kind of movement instructions the robot controller will receive from the EGM endpoint. Establishing pose here means that the EGM process will be expecting movement instructions in the form of position and orientation (see section \ref{sec:Tech_Back:Rob_Move:pos_orient}). \par
+Once the fine movement to a target is complete, the connection setup can begin. Although it should not happen in this example program, it is possible that a given EGM process could still be in a state of {\scriptsize{EGM\_STATE\_RUNNING}} in a more complicated program. It is recommended good practice to reset EGM processes (EGMReset) before using them. EGMGetId will instantiate an EGM process if one is not already attached to the egmident 'egmProc'. EGMGetState will return the state of the EGM process. The condition 'egmSt $<=$ {\scriptsize{EGM\_STATE\_CONNECTED}}' will be true if the state is {\scriptsize{EGM\_STATE\_DISCONNECTED}} or {\scriptsize{EGM\_STATE\_CONNECTED}} but will return false if the sate is {\scriptsize{EGM\_STATE\_RUNNING}}. Because this program forces a reset, the state will be {\scriptsize{EGM\_STATE\_DISCONNECTED}}. The connection to the EGM endpoint is setup with the instruction 'EGMSetupUC' in the same way as for position streaming. The option \textbackslash Pose indicates that position and orientation should be expected movement instruction cinvention (see section \ref{sec:Tech_Back:Rob_Move:pos_orient}). \par
 
 With the connection established, the position guidance can be set up. The command 'EGMActPose' (and its many arguments) is used for this setup. A full explanation of this command can be found at \cite[Sec. 1.67]{ABB:rapid_instructions}. The arguments \textbackslash Tool and \textbackslash WObj are used to establish which tool and work object reference frames to use. In this case, actually defining \textbackslash Tool $:=$tool0 and \textbackslash WObj $:=$wobj0 is redundant because the default when no tool or work object is given is tool0 and wobj0. The four following arguments in order are given in the program as: corr\_frame\_offs, {\scriptsize{EGM\_FRAME\_WOBJ}}, corr\_frame\_offs, {\scriptsize{EGM\_FRAME\_WOBJ}}. In the documentation, the names given to these fields are: CorrFrame, CorrFrType, SensorFrame, SensorFrType. These are not optional arguments and they essentially define how the EGM process will interpret the position and orientation data sent by the EGM endpoint. The first two (CorrFrame = corr\_frame\_offs, CorrFrType = {\scriptsize{EGM\_FRAME\_WOBJ}}) tell the EGM process the corrections should be applied in the frame called 'corr\_frame\_offs' and that that particular frame is a '{\scriptsize{EGM\_FRAME\_WOBJ}}'. What that means is that corr\_frame\_offs is relative to the active work object (\textbackslash WObj $:=$wobj0). The second set of arguments (SensorFrame = corr\_frame\_offs, SensorFrType = {\scriptsize{EGM\_FRAME\_WOBJ}}) regard how the EGM process will interpret the data from the EGM endpoint. All of that is to say, the EGM process will interpret position and orientation data from the EGM endpoint as being the the same reference frame as wobj0 and it will apply any corrections in the same frame as wobj0. \cite[Sec. 3.24]{ABB:rapid_instructions} contains a more detailed explanation of the frame types as well as a list of the predefined frame types like {\scriptsize{EGM\_FRAME\_WOBJ}}. The arguments \textbackslash x, \textbackslash y, \textbackslash z, \textbackslash rx, \textbackslash ry, and \textbackslash rz define the convergence criteria for linear and rotational movements. What that means is that for linear movements (x, y, z), a point is considered to be reached if it is within $\pm 1$ $mm$ of the given point and a rotation around an axis (rx, ry, rz) is considered finished if it is within $\pm 2^{\circ}$ of the given rotation. The conditions of $\pm 1$ $mm$ and $\pm 2^{\circ}$ are given by minmax\_lin and minmax\_rot respectively. The arguments \textbackslash LpFilter is an optional way to override the frequency of the EGM process configuration that is used in EGMSetupUC. In this case, the configuration called 'default' is used and as per the definition in figure \ref{fig:process_config}, the default value is 20 $Hz$. The argument '\textbackslash LpFilter := 2' overrides the default with 2 $Hz$. The argument \textbackslash Samplerate :=4 sets the sample rate to every 4 $ms$ and the argument \textbackslash MaxSpeedDeviation :=2 establishes that the maximum change in rotational speed for any motor is $2^{\circ}/s$ (i.e. if the current rotational speed of a motor is $3^{\circ}/s$, it can only be set to a new value between $3\pm2^{\circ}/s$). \par
 
-Finally, position guidance execution happens when the instruction 'EGMRunPose emgProc' is called. While running, the EGM process will: sample the state from the motion control process, send the state data to the EGM endpoint, and place any motion instructions it receives from the EGM endpoint into the motion control processes queue. \cite[Sec. 9.3.2.3]{ABB:controller_software} provides a good diagram of this process (see figure \ref{fig:runpose_diagram}). For context, it is important to note that in figure \ref{fig:runpose_diagram} the naming conventions are slightly different than the ones used in this paper. For this paper, the object labeled 'Sensor' is an EGM endpoint, the object labeled 'EGM' is an EGM process, and the object labeled 'Motion control' is the motion control process. Figure \ref{fig:runpose_diagram} also refers to reading and sending 'feedback' (steps 2 and 3) as well as sending and writing 'position' (steps 4 and 5). This paper has been referring to the data called 'feedback' and 'position' as 'state data' and 'movement instructions' respectively. While this change in naming convention does happen in the documentation, this paper will attempt to keep the naming conventions as consistent as possible. To tie everything together, see the position guidance sequence diagram in figure \ref{fig:sequence_pos_guide}. \par
-
 \begin{figure}[H]
+\vspace{0.5cm}
     \centering
-    \includegraphics[width=10cm]{pic_endpoint-process-motion-diagram.png}
+    \includegraphics[width=11cm, height=5cm]{pic_endpoint-process-motion-diagram.png}
     \caption{The process that starts when EGMRunPose is called.}
     \label{fig:runpose_diagram}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
-    \tikzset{every picture/.append style={transform shape, scale=0.85}}
+    \tikzset{every picture/.append style={transform shape, scale=0.95}}
     \begin{sequencediagram}
     \renewcommand\unitfactor{0.5}
         \newthread{rapid}{\scriptsize{ : RAPID Program}}{}
@@ -1139,9 +1121,15 @@ Finally, position guidance execution happens when the instruction 'EGMRunPose em
         %\end{call}
     \end{sequencediagram}
     \end{center}
-    \caption{Sequence diagram for EGM position Stream.}
+    \caption{Sequence diagram for EGM position guidance.}
     \label{fig:sequence_pos_guide}
 \end{figure}
+
+Finally, position guidance execution happens when the instruction 'EGMRunPose emgProc' is called. While running, the EGM process will: sample the state from the motion control process, send the state data to the EGM endpoint, and place any motion instructions it receives from the EGM endpoint into the motion control processes queue. \cite[Sec. 9.3.2.3]{ABB:controller_software} provides a good diagram of this process (see figure \ref{fig:runpose_diagram}). For context, it is important to note that in figure \ref{fig:runpose_diagram} the naming conventions are slightly different than the ones used in this paper. For this paper, the object labeled 'Sensor' is an EGM endpoint, the object labeled 'EGM' is an EGM process, and the object labeled 'Motion control' is the motion control process. Figure \ref{fig:runpose_diagram} also refers to reading and sending 'feedback' (steps 2 and 3) as well as sending and writing 'position' (steps 4 and 5). This paper has been referring to the data called 'feedback' and 'position' as 'state data' and 'movement instructions' respectively. While this change in naming convention does happen in the documentation, this paper will attempt to keep the naming conventions as consistent as possible. To tie everything together, see the position guidance sequence diagram in figure \ref{fig:sequence_pos_guide}. \par
+
+
+
+
 %*******************************************************************
 
 
@@ -1154,6 +1142,7 @@ Running an EGM process for path correction is similar to running a process for p
 
 \begin{figure}[H]
     \centering
+    \footnotesize{
     \begin{tabular}{| l | c |}
     \hline
         \textbf{Parameter} & \textbf{Value} \\ \hline
@@ -1165,45 +1154,43 @@ Running an EGM process for path correction is similar to running a process for p
         Default Proportional Position Gain & 5  \\
         Default Low Pass Filter Bandwidth & 20  \\ \hline
     \end{tabular}
+    }
     \caption{The default EGM process configuration.}
     \label{fig:pathcorr_config}
 \end{figure}
 
-The general sequence of events in path correction is similar to those of position streaming. I.e. both EGM processes run concurrently to the execution of a path that is defined in the RAPID program. Where they differ is in the messages that are received from the EGM endpoint and what is done with the messages. In position streaming, EgmSensor messages are sent from the endpoint and disregarded by the controller. In path correction, the endpoint sends EgmSensorPathCorr messages to the controller which are not ignored. The EgmSensorPathCorr messages contain $y$ and $z$ values for a translation of the TCP in reference to a 'correction frame'. In figure \ref{fig:rapid_path_corr}, the EGM process 'egmProc' is setup for 'ROB\_1' with 'pathCorr' parameters and transmission protocol 'endpoint\_address' by the instruction 'EGMSetupUC'. The EGM process is then started with 'EGMActMove'. This begins the data stream to the EGM endpoint. When the first move instruction is called (i.e. MolveL Home) the endpoint receives EgmRobot messages, but any EgmSensorPathCorr messages sent are ignored. Only when the second move instruction (i.e. EGMMoveL egmProc, Target\_10) is called does the robot controller begin to take the EgmSensorPathCorr messages into account. While executing one of these EGMMoveL instructions, The actual position of the TCP can be displaced in the $yz$-plane of the correction frame (see section \ref{sec:EGM:Modes:corr}). 
+The general sequence of events in path correction is similar to those of position stream. Both EGM processes run during execution of a RAPID program path. They differ in the messages that the endpoint sends different message protocols depending on mode. In position streaming, EgmSensor messages are sent from the endpoint and disregarded by the controller. In path correction, the endpoint sends EgmSensorPathCorr messages to the controller which are not ignored. The EgmSensorPathCorr messages contain $y$ and $z$ values for a translation of the TCP in reference to a 'correction frame'. In figure \ref{fig:rapid_path_corr}, the EGM process 'egmProc' is setup for 'ROB\_1' with 'pathCorr' parameters and transmission protocol 'endpoint\_address' by the instruction 'EGMSetupUC'. The EGM process is then started with 'EGMActMove'. This begins the data stream to the endpoint. When the first move instruction is called (i.e. MolveL Home) the endpoint receives EgmRobot messages, but any EgmSensorPathCorr messages sent are ignored. When the EGM move instruction (EGMMoveL) is called, the robot controller begins to take the EgmSensorPathCorr into account. While executing one of these EGMMoveL instructions, The actual position of the TCP can be displaced in the $yz$-plane of the correction frame (see section \ref{sec:EGM:Modes:corr}). 
 
 \lstset{language=RAPID}
 \begin{figure}[H]
     \centering
     \begin{lstlisting}
-! This example assumes the definition of these targets elsewhere.
+! Example assumes the definition of the targets
 CONST robtarget Home;
-CONST robtarget Target_10;
-CONST robtarget Target_20;
-	
-! Declare an EGM process called egmProc
+CONST robtarget T10;
+CONST robtarget T20;
 VAR egmident egmProc;
-
-! The EGM position stream procedure
+! The EGM path correction procedure
 PROC runPathCorr()
     EGMGetId egmProc;
     EGMSetupUC ROB_1, egmProc, "pathCorr", "endpoint_address"\PathCorr;
     EGMActMove egmProc tool0.tFrame\SampleRate:=4;
     MoveL Home, v100, fine, tool0 \WObj:=wobj0;
-    EGMMoveL egmProc, Target_10, v100, z10, tool0 \WObj:=wobj0;
-    EGMMoveL egmProc, Target_20, v100, fine, tool0 \WObj:=wobj0;
+    EGMMoveL egmProc, T10, v100, z10, tool0 \WObj:=wobj0;
+    EGMMoveL egmProc, T20, v100, fine, tool0 \WObj:=wobj0;
     MoveL Home, v100, fine, tool0 \WObj:=wobj0;
     EGMReset egmProc;
 ENDPROC
-    \end{lstlisting}
-    \caption{Example RAPID program for EGM path correction.}
-    \label{fig:rapid_path_corr}
+\end{lstlisting}
+\caption{Example RAPID program for EGM path correction.}
+\label{fig:rapid_path_corr}
 \end{figure}
 
 As illustrated in figure \ref{fig:how_to_path_corr}, in path correction the tool frame ($x^{\prime}$, $y^{\prime}$, $z^{\prime}$) is displaced in relation to the correction frame ($x^{\prime\prime}$, $y^{\prime\prime}$, $z^{\prime\prime}$). The correction frame is defined with its $x$-axis in the direction of the movement (from Home to Target\_10) and the $yz$-plane is defined in relation to the $z^{\prime}$-axis of the tool frame (see section \ref{sec:Tech_Back:Rob_Move:frames}). Figure \ref{fig:how_to_path_corr} shows the deviation of the TCP from the path. When EgmSensorPathCorr messages contain corrections ($y$, $z$) which are not $(0,0)$, the robot controller will attempt to position the TCP at those coordinates in the correction frame. The pink line labeled 'correction' shows the trajectory of the TCP from the point the corrections were received to the point where the corrected position was reached. Without any corrections (i.e. $y=0$, $z=0$ in EgmSensorPathCorr messages) the TCP will be at the origin of the correction frame for the entire movement (i.e. the TCP will follow the path). 
 
 \begin{figure}[H]
  \begin{center}
-    \tikzset{every picture/.append style={transform shape, scale=1.65}}
+    \tikzset{every picture/.append style={transform shape, scale=1.15}}
 \tdplotsetmaincoords{70}{110}
 \pgfmathsetmacro{\ptheta}{55}
 %\pgfmathsetmacro{\ctheta}{90}
@@ -1689,7 +1676,7 @@ To provide a concrete development goal, it was decided early in the project to u
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=8cm]{Demo_markup.png}
+    \includegraphics[width=11.5cm]{Demo_markup.png}
     \caption{Sensor-helmet simulation part labels.}
     \label{fig:demo_markup}
 \end{figure}
@@ -1697,8 +1684,9 @@ To provide a concrete development goal, it was decided early in the project to u
 The following communication events are all numbered as to correspond to the numbered communication lines in figure \ref{fig:demo_arch}. (1) The position of the head is detected by the EgmLineSensor. (2) The properties of the EgmLineSensor are set to send the LineSensor messages to port 8082. Also included in this simulation environment was an EgmEndpoint SmartComponent. As explained in section \ref{sec:Result:LthRobotStudio:EgmEndpoint}, the EgmEndpoint was built specifically for this demonstration. (2) It contains an EgmUdpThread called egmLineSensor bound to port 8082 which receives the serialized LineSensor messages from the EgmLineSensor and (3) passes them to the monitor (an instance of DemoEgmMonitor) by calling the Write() method. EgmEndpoint also contains another EgmUdpThread (bound to port 6511) called egmPositionGuidance which also has a reference to the monitor. An EGM process is started in the virtual controller by the RAPID program. (6b) This process's transmission protocol communicates with an EGM endpoint on port 6511. (4) When the EgmRobot messages arrive at egmPositionGuidance, they are passed to the monitor by calling the Write() method. The monitor uses the port number of the EgmUdpThread that calls Write() to decide what de-serialization protocol to use. If the calling thread is on port 8082, the monitor de-serializes the data as a LineSensor message (using EgmLineSensor.cs) and calculates the change in $y$ position ($\Delta y$) for the head based on the previous sensor data. If Write() is called by the thread on port 6511, the monitor deserializes the data as an EgmRobot message (using Egm.cs) and extracts the state data of the robot. When a thread on port 8082 calls the Read() method of the monitor null is returned, thereby causing the thread to send no response. (4) If Read() is called by a thread on port 6511, the monitor uses the $\Delta y$ and the current robot state data to calculate the required movement instruction for the robot. The monitor will then: build an EgmSensor message containing the movement instruction, serialize it using Egm.cs, and finally return the serialized EgmSensor message to the thread that called Read(). (6a)The serialized EgmSensor message will then be sent to the EGM process. (7) The EGM process then passes the movement instruction to the motion control process. The video of these concurrent processes can be viewed at \cite{Greg:Final_Demo}. 
 
 \begin{figure}[H]
+\vspace{2cm}
     \centering
-    \includegraphics[width=10cm]{ArchComponents2.jpg}
+    \includegraphics[width=14cm]{ArchComponents2.jpg}
     \caption{Entities in the demonstration. Data flow connections in red.}
     \label{fig:demo_arch}
 \end{figure}
@@ -1900,7 +1888,7 @@ A more in-depth discussion of the first three research topics has been included 
 %*******************************************************************
 % YOUR APPENDICES ARE BAD AND YOU SHOULD FEEL BAD
 %*******************************************************************
-\newpage
+
 \begin{appendices}
 
 
@@ -2265,7 +2253,8 @@ public void Write(int udpPortNbr, byte[] data)
 \chapter{Hypothetical Framework Applications}
 \label{app:Hypothetical}
 In this project there have been several instances where the exploration of a useful concept was stopped before anything conclusive was developed. The following sections outline a suggested starting point for using the framework to continue some of the work that was not completed. It should be noted all of these suggestions are hypothetical, but they represent where the author of this paper would start work on these topics. Taken together, these suggestions should be the basic components needed to implement a simulation of an EGMRI robot.
-
+ 
+\newpage
 \section{Creating an EGMRI to EGM Adapter}
 \label{app:Hypothetical:egmri_adapter}
 The issue that halted the full exploration of a protocol adapter (an EGM endpoint that accepts another protocol as input and translates it to EGM) was a design flaw in the method for handeling UDP communication (see sections \ref{sec:Dev:I2:python_adapter} and \ref{sec:Dev:I2:one_endpoint}). That particular issue was resolved. The next attempt to construct an adapter for EGMRI would start with the configuration in figure \ref{fig:egmri_adapter}.
@@ -2278,6 +2267,7 @@ The issue that halted the full exploration of a protocol adapter (an EGM endpoin
 \end{figure}
 The idea is essentially to implement two endpoints (an application and an adapter). The adapter would communicate with the controller with the EGM protocol via the EgmThread. Torque sensors (the hypothetical implementation of which is discussed in section \ref{app:Hypothetical:torque}) would send relevant joint torque data to the TorqueThread. The logic for creating EGMRI messages from these two sources of data would be in the EgmriMonitor. The EGMRI protocol messages would be sent and received from via the EgmriThread. As it stands, the EgmUdpThread class does not support initiating a UDP connection, but the connection could be initiated in a similar way to the SendState() method in the EgmLineSensor class. Assuming that success of a torque sensor implementation, this model could work.
 
+\newpage
 \section{Creating a Virtual Torque Sensor}
 \label{app:Hypothetical:torque}
 A torque sensor (that could detect the torque of the joint in a simulated robot) could look like figure \ref{fig:torque_sensor}.
@@ -2291,6 +2281,7 @@ A torque sensor (that could detect the torque of the joint in a simulated robot)
 
 To calculate torque in a simulation, the smart component will need to extract information from the simulated robot. It would be useful if the choice of the robot and the joint being measured was given to the user, so there could be a property for mechanism and joint defined in the EgmTorqueSensor.xml. The idea is that, once the user asigns this smart component a mechanism and joint, the method CalculateTorque() in the CodeBehind.cs will use those properties to find the appropriate machanism and joint in the simulation, extract the data needed to calculate torque for that joint and then call the SendState() method that will send an EgmTorqueSensor protocol message to the user given port number (xml property). This is a very vague suggestion, but assuming that a smart component can extract the data required to calculate torque, this model should work. The class to serialize and deserialize the protocol messages (EgmTorqueSensor.cs) would not need to be added to the EgmMessagePrototols namespace for this to work. As long as the class is in both the EgmTorqueSensor smart component namespace and the namespace of the IEgmMonitor implementation that receives it, the protocol will work. The advantage of adding EgmTorqueSensor.cs to the smart component and the IEgmMonitor is that the framework would not need to reinstalled in RobotStudio. 
 
+\newpage
 \section{EGM and Python}
 \label{app:Hypothetical:python}
 This project never actually implemented an EGM endpoint in python. However, all of the pieces required for a multi-threaded synchronous UDP communication of google protocol buffer messages via a monitor were implemented \cite{Greg:Jupyter}. That is to say, there is very little difference between the EGM endpoint that was built using the framework for the demonstration (the EgmEndpoint smart component) and the Python code that was developed. The difference is that serialization code for egm.proto was never built. However, other protocol definitions were built into serialization code for Python (i.e. line\_sensor\_pb2.py handles line\_sensor.proto messages). It should be possible to implement an EGM endpoint by:

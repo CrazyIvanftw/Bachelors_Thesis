@@ -81,14 +81,15 @@
 	\subtitle{}
 	
 	% for the title page
-	\pretitle{\noindent\rule{\linewidth}{1pt}\begin{center}\Huge}
-	\posttitle{\par \vskip 0.25em \ifx \@subtitle \empty \vskip 0.25em \else {\large(\@subtitle)} \fi \end{center}\noindent\rule{\linewidth}{1pt}\vskip 0.5em}
-	\predate{\vskip 0.25em \begin{center}\normalsize}
-	\postdate{\par\vfill
+	\pretitle{
 	\begin{figure}[H]
 	    \centering
-	    \includegraphics[width=12cm]{lund-universitet-och-campus.png}
+	    \includegraphics[width=11cm]{lund-universitet-och-campus.png}
 	\end{figure}
+	\noindent\rule{\linewidth}{1pt}\begin{center}\Huge}
+	\posttitle{\vskip 0.25em {\large\@subtitle} \end{center}\noindent\rule{\linewidth}{1pt}\vskip 0.25em}
+	\predate{\begin{center}\normalsize}
+	\postdate{\par\vfill
 	{\large LTH School of Engineering at Campus Helsingborg 
 		\ifx\@company\empty
 		 	\ClassWarning{cslthse-msc}{Host company missing. Use \protect\company{name}. Defaulting to CS.}
