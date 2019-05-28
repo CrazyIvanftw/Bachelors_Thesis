@@ -125,7 +125,7 @@ Lund 2019
 \author{Gregory Austin {\normalsize \href{mailto:sas10gau@student.lu.se}{\texttt{sas10gau@student.lu.se}}}}
 
 \title{Simulation of Sensor-Controlled Robotics}
-\subtitle{An offline programming framework for sensor-control via externally guided motion in RobotStudio.}
+\subtitle{An offline programming framework for sensor-control via Externally Guided Motion in RobotStudio.}
 %\company{The Corporation AB LTD Inc}
 %\thanks{\small{Department of Automatic Control, Lund University.}}
 \supervisor{Anders Robertsson, \small{Department of Automatic Control}\\ \href{mailto:anders.robertsson@control.lth.se}{\texttt{anders.robertsson@control.lth.se}}}
@@ -141,12 +141,12 @@ Lund 2019
 \theabstract{Utilizing sensors to control robot motion is becoming more prevalent in the field of robotics. Developing robot programs in simulations (called offline programming) is standard industry practice. Incorporating sensors into these simulations for motion control is a relatively new phenomenon compared to the offline programming itself. As such, there are unexplored methods to achieve sensor control in simulated robot systems. ABB robot controllers provide access to their motion control processes via the externally guided motion (EGM) interface. Exploratory research and development was conducted into the simulation of sensor-controlled robotics via EGM in RobotStudio (ABB's offline programming environment). This research and development led to a prototype framework for utilizing EGM and RobotStudio for offline programming of sensor-controlled robot systems. This paper documents the relevant research findings and development processes that contributed to the framework.
 }
 
-\keywords{Externally guided motion, EGM, robot, robotics, RobotStudio, virtual sensor, sensor simulation, ABB, sensor guided motion, sensor control, EGM framework, offline programming}
+\keywords{Externally Guided Motion, robot, robotics, RobotStudio, virtual sensor, sensor simulation, ABB, sensor guided motion, sensor-based control, offline programming}
 
 
-\sammanfattning{Användning av sensorer för att styra robotrörelse blir allt vanligare i robotik. Utveckling av robotprogram i simuleringar (så kallad offlineprogrammering) är en standard branschpraxis. Integration av sensorer i dessa simuleringar för sensorstyrning är ett relativt nytt fenomen jämfört med själva offlineprogrammeringen. Som sådan finns det oprövade metoder för att uppnå sensorstyrning av simulerade robotsystem. ABB styrenheter ger åtkomst till sina rörelsekontrollprocesser via gränssnittet för externt rörelsestyrning (EGM). Explorativ forskning och utveckling genomfördes i simulering av sensorstyrd robotik via EGM i RobotStudio (ABB:s offlineprogrammeringsmiljö). Denna forskning och utveckling ledde till en prototyp av ett ramverk för offlineprogrammering av sensorstyrda robotar genom EGM i RobotStudio. De relevanta forskningsresultaten och utvecklingsprocesserna som bidrog till ramverket dokumenteras härin.}
+\sammanfattning{Användning av sensorer för att styra robotrörelse blir allt vanligare i robotik. Utveckling av robotprogram i simuleringar (så kallad offlineprogrammering) är en standardbranschpraxis. Integration av sensorer i dessa simuleringar för sensorstyrning är dock ett relativt nytt fenomen jämfört med själva offlineprogrammeringen. Som sådant finns det oprövade metoder för att uppnå sensorstyrning av simulerade robotsystem. ABBs robotstyrenheter ger åtkomst till sina rörelsekontrollprocesser via gränssnittet för extern rörelsestyrning (EGM). Explorativ forskning och utveckling genomfördes i simulering av sensorstyrd robotik via EGM i RobotStudio (ABB:s offlineprogrammeringsmiljö). Denna forskning och utveckling ledde till en prototyp av ett ramverk för offlineprogrammering av sensorstyrda robotar genom EGM i RobotStudio. De relevanta forskningsresultaten och utvecklingsprocesserna som bidrog till ramverket dokumenteras i denna rapport.}
 
-\nyckelord{Externt rörelsestyrning, EGM, robot, robotik, RobotStudio, virtuell sensor, sensorsimulering, ABB, sensorstyrd rörelse, sensorstyrning, EGM ramverk, offlineprogrammering}
+\nyckelord{Extern rörelsestyrning, EGM, robot, robotik, RobotStudio, virtuell sensor, sensorsimulering, ABB, sensorstyrd rörelse, sensorstyrning, off-line programmering}
 
 \begin{document}
 \bstctlcite{IEEEexample:BSTcontrol}
@@ -231,12 +231,12 @@ The following situation was given as a possible application for a sensor-control
 \end{figure}
 RobotStudio has a few of the components needed to build such a simulation. The robot arm, the virtual robot controller, and the virtual distance sensor are available. There is also a communication protocol available for ABB robot controllers called 'Externally Guided Motion' (EGM). The virtual controllers have the option to use EGM. The missing components for a simulation of the sensor-helmet are: retrieval of the sensor data, interpretation of the data into robot movement, and communication with the virtual controller via EGM.\par
 
-From a practical standpoint, this project focused on simulating a part of the sensor-helmet system described above. I.e. the project attempted to solve the problem of missing simulation components for the sensor-helmet system by exploratory research of EGM and its technology dependencies (see section \ref{sec:Tech_Back}) and exploratory development of the required simulation components (see section \ref{sec:Dev}). From the standpoint of the project goals, this project generalized the work on the sensor-helmet problem for a wider range of applications and documented the results to act as a guide. The results of this project can be found in section \ref{sec:Result:LthRobotStudio} and a demonstration of the sensor-helmet simulation can be found in section \ref{sec:Result:Demo}. \par
+From a practical standpoint, this project focused on simulating a part of the sensor-helmet system described above, i.e., the project attempted to solve the problem of missing simulation components for the sensor-helmet system by exploratory research of EGM and its technology dependencies (see section \ref{sec:Tech_Back}) and exploratory development of the required simulation components (see section \ref{sec:Dev}). From the standpoint of the project goals, this project generalized the work on the sensor-helmet problem for a wider range of applications and documented the results to act as a guide. The results of this project can be found in section \ref{sec:Result:LthRobotStudio} and a demonstration of the sensor-helmet simulation can be found in section \ref{sec:Result:Demo}. \par
 
 
 \section{Justification of Work}
 \label{sec:Intro:Justification}
-As the use of sensor-controlled robotics grows, the need to be able to simulate these systems also grows. From the perspective of the author, this project represents the chance to learn about the process of programming robots as well as to explore a typical industry tool for robot programming in depth. From the perspective of the Robotics Laboratory, it is important to have a simulation environment that is usable for students and researchers. E.g. the case with the sensor-helmet not hypothetical; a functional framework for simulating sensor-control in RobotStudio has applications for the project. 
+As the use of sensor-controlled robotics grows, the need to be able to simulate these systems also grows. From the perspective of the author, this project represents the chance to learn about the process of programming robots as well as to explore a typical industry tool for robot programming in depth. From the perspective of the Robotics Laboratory, it is important to have a simulation environment that is usable for students and researchers. A functional framework for simulating sensor-control in RobotStudio has applications for the projects like the sensor-helmet research and similar projects.
 
 \section{Limitations and Scope}
 \label{sec:Intro:Limits_Scope}
@@ -294,7 +294,7 @@ The term 'robot system' will be used to describe the complete ecosystem that a r
 
 \section{RobotWare}
 \label{sec:Tech_Back:RobotWare}
-The software that runs on ABB robot controllers is called RobotWare. It is important to distinguish between the RobotWare-OS, RobotWare options, and RobotWare add-ins \cite[Sec. 1]{ABB:controller_software}. RobotWare-OS is the operations system that runs on the robot controller. A RobotWare options and add-ins are both software that run on top of the OS to add extra functionality to a robot. The difference is that ABB officially produces RobotWare options while add-ins are user made. 
+The software that runs on ABB robot controllers is called RobotWare. It is important to distinguish between the RobotWare-OS, RobotWare options, and RobotWare add-ins \cite[Sec. 1]{ABB:controller_software}. RobotWare-OS is the operating system that runs on the robot controller. RobotWare options and add-ins are both software that run on top of the OS to add extra functionality to a robot. The difference is that ABB officially produces RobotWare options while add-ins are user made. 
 
 \section{Line Sensors}
 \label{sec:Tech_Back:Line_Sensors}
@@ -309,13 +309,13 @@ RAPID is the programming language of ABB robots. RAPID code is stored and run on
 
 \subsection{The convention used in this project}
 \label{sec:Tech_Back:Rob_Move:conventions}
-There are two main conventions used to describe the location of a robot. The first is to describe the angle of each joint of the robot . The second convention is to describe the \textit{position} and the \textit{orientation} of the robot. While both conventions are supported in the RobotWare-os, the work done in the project used the position and orientation convention exclusively. This section is intended to be a 'crash course' in how the convention is used in the RobotWare-os. 
+There are two main conventions used to describe the location of a robot. The first is to describe the angle of each joint of the robot . The second convention is to describe the \textit{position} and the \textit{orientation} of the robot. While both conventions are supported in the RobotWare-OS, the work done in the project used the position and orientation convention exclusively. This section is intended to be a 'crash course' in how the convention is used in the RobotWare-OS. 
 
 \subsection{Default frames for position and orientation in RobotWare}
 \label{sec:Tech_Back:Rob_Move:frames}
-When talking about a robot's position, the convention is to use a single point on the robot or a tool that is attached to the robot (usually the point at which work is being done). In RobotWare, this point is called the tool center point (TCP). The TCP could be the tip of a tool attached to the end of the robot or (in the absence of a tool) it could be the anchor point for tools on the robot. The coordinates of the TCP alone are not enough to describe robot movement, however. If the TCP is positioned at the coordinates (5,5,5), in which direction is the tool pointed? With only the position of the TCP, it is impossible to discern if the tool is pointing from the floor 'upward' to the point (5,5,5) or if the tool is pointing 'downward' from the ceiling. To solve this problem, an orientation is used to describe the specific rotation of the tool around the TCP. However, this raises the issue of how to describe orientation.\\
-The RobotWare-os starts addressing the issue by defining local coordinate systems for each object it works with in reference to a global coordinate system. These coordinate systems are called frames. There are many defined frames in both the virtual controllers in RobotStudio and the physical controllers \cite[Sec. 1.2.6]{ABB:robotstudio}, but for the purposes of understanding this project, only the frames of the TCP and the work object (Wobj) will be discussed.\\
-The Wobj is default frame of reference for most robot controller activities. The user can define a Wobj but the default is called wobj0 which has its coordinate system origin defined at the base of the robot. The TCP is used as the origin of the Tool frame. A Tool frame is always defined such that the z-axis follows the direction of work for the tool, where the positive z goes from the TCP away from the tool and the negative z goes from the TCP into the body of the tool. E.g. for a pen tool the TCP would be the writing tip of the pen and the Tool frame z-axis would go through the body of the pen in the negative direction and towards the paper in the positive direction (see figure \ref{fig:TCP_frame}). The default Tool frame is called tool0 and has its TCP defined as the anchor point for tools at the end of the robot arm. The robot diagram in figure \ref{fig:wobj0_tool0} shows an example of the positioning of the wobj0 and tool0 frames. The notation of labeling the Wobj frame axes without primes (i.e. $x$) and the Tool frame axes with primes (i.e. $x^\prime$) will be continued in this section. 
+When talking about a robot's position, the convention is to use a single point on the robot or a tool that is attached to the robot (usually the point at which work is being done). In RobotWare, this point is called the tool center point (TCP). The TCP could be the tip of a tool attached to the end of the robot or (in the absence of a tool) it could be the anchor point for tools on the robot. However, the coordinates of the TCP alone are not enough to describe robot movement (or static positioning). If the TCP is positioned at the coordinates (5,5,5), in which direction is the tool pointed? With only the position of the TCP, it is impossible to discern if the tool is pointing from the floor 'upward' to the point (5,5,5) or if the tool is pointing 'downward' from the ceiling. To solve this problem, an orientation is used to describe the specific rotation of the tool around the TCP. However, this raises the issue of how to describe orientation.\\
+The RobotWare-OS starts addressing the issue by defining local coordinate systems for each object it works with in reference to a global coordinate system. These coordinate systems are called frames. There are many defined frames in both the virtual controller in RobotStudio and the physical controllers \cite[Sec. 1.2.6]{ABB:robotstudio}, but for the purposes of understanding this project, only the frames of the TCP and the work object (Wobj) will be discussed.\\
+The Wobj (which is defined in relation to a world frame or a robot base frame) is the default frame of reference for most robot controller activities. The user can define a Wobj but the default is called wobj0 which has its coordinate system origin defined at the base of the robot. The TCP is used as the origin of the Tool frame. A Tool frame is always defined such that the z-axis follows the direction of work for the tool, where the positive z goes from the TCP away from the tool and the negative z goes from the TCP into the body of the tool. In the case of a pen tool, the TCP would be the writing tip of the pen and the Tool frame z-axis would go through the body of the pen in the negative direction and towards the paper in the positive direction (see figure \ref{fig:TCP_frame}). The default Tool frame is called tool0 and has its TCP defined as the anchor point for tools at the end of the robot arm. The robot diagram in figure \ref{fig:wobj0_tool0} shows an example of the positioning of the wobj0 and tool0 frames. The notation of labeling the Wobj frame axes without primes (i.e. $x$) and the Tool frame axes with primes (i.e. $x^\prime$) will be continued in this section. 
 
 
 \begin{figure}[H]
@@ -340,6 +340,7 @@ The Wobj is default frame of reference for most robot controller activities. The
 \label{sec:Tech_Back:Rob_Move:pos_orient}
 This section will attempt to outline a useful working model of position and orientation. The following definitions are not as mathematically rigorous as they could be. Because readers of this paper are likely to fall into two categories (i.e. experienced with robotics or very new to robotics) the goal is to present enough information to understand the project. Any reader that has experience with Euler angels or quaternions to describe spatial orientations or rotations can skip to section \ref{sec:Tech_Back:Rob_Move:target_path} for how these concepts are applied in RAPID. It should also be noted that these definitions focus only on the Tool frame in relation to the Wobj frame, but the concepts extend to all other frames and coordinate systems in RobotWare.\par
 
+\newpage
 A frame is the unit vectors of a coordinate system. The two frames needed to define the position of the robot are the Wobj frame ($x$, $y$, $z$) and the Tool frame ($x^\prime$, $y^\prime$, $z^\prime$). The origin of the Tool coordinate system is the TCP. The position ($p$) of the robot is the coordinates of the TCP in the coordinate system given by the Wobj frame (see figure \ref{fig:rob_position}). That is to say: $p = (x_{t}, y_{t}, z_{t})$ regardless of the orientation of the Tool frame.
 
 \begin{figure}[H]
@@ -348,11 +349,11 @@ A frame is the unit vectors of a coordinate system. The two frames needed to def
 \begin{tikzpicture}[tdplot_main_coords]
     
     
-    \draw[BrickRed,thick,->] (0,0,0) -- (4,0,0) node[anchor=north east]{$x$};
+    \draw[BrickRed,thick,->] (0,0,0) -- (3,0,0) node[anchor=north east]{$x$};
     \draw[OliveGreen,thick,->] (0,0,0) -- (0,4,0) node[anchor=north west]{$y$};
-    \draw[Blue,thick,->] (0,0,0) -- (0,0,4) node[anchor=south]{$z$};
+    \draw[Blue,thick,->] (0,0,0) -- (0,0,3) node[anchor=south]{$z$};
     \node[anchor=south east] at (0,0,0){\footnotesize{Wobj frame}};
-    \tdplotsetrotatedcoords{50}{50}{90}
+    \tdplotsetrotatedcoords{30}{30}{0}
     \coordinate (O) at (0,0,0);
     \coordinate (S) at (1.0,3.5,1.25);
     
@@ -373,11 +374,11 @@ A frame is the unit vectors of a coordinate system. The two frames needed to def
     
     \tdplotsetrotatedcoordsorigin{(P)}
     \draw[thick,color=RubineRed,tdplot_rotated_coords,->] (0,0,0) --
-        (3,0,0) node[anchor=west]{$x^\prime$};
+        (2,0,0) node[anchor=west]{$x^\prime$};
     \draw[thick,color=Green,tdplot_rotated_coords,->] (0,0,0) --
-        (0,3,0) node[anchor=south]{$y^\prime$};
+        (0,2,0) node[anchor=south]{$y^\prime$};
     \draw[thick,color=Cerulean,tdplot_rotated_coords,->] (0,0,0) --
-        (0,0,3) node[anchor=south west]{$z^\prime$};
+        (0,0,2) node[anchor=south west]{$z^\prime$};
     \node[anchor=north east, tdplot_rotated_coords] at (0,0,0){\footnotesize{Tool frame}};
 \end{tikzpicture}
 \caption{The position of the TCP (origin of the Tool frame) in reference to the Wobj frame.}
@@ -397,11 +398,13 @@ $$
 
 Using this model, a quaternion orientation ($q_1$, $q_2$, $q_3$, $q_4$) is defined in \cite[Sec. 3.53]{ABB:rapid_instructions} as: 
 
-$$q_1 = \frac{\sqrt{x_{x^\prime} + y_{y^\prime} + z_{z^\prime} + 1}}{2}$$
-$$q_2 = \pm \frac{\sqrt{x_{x^\prime} - y_{y^\prime} - z_{z^\prime} + 1}}{2}$$
-$$q_3 = \pm \frac{\sqrt{y_{y^\prime} - x_{x^\prime} - z_{z^\prime} + 1}}{2}$$
-$$q_4 = \pm \frac{\sqrt{z_{z^\prime} - x_{x^\prime} - y_{y^\prime} + 1}}{2}$$
-Where the signs of $q_2$, $q_3$, and $q_4$ are the same as ($z_{y^\prime} - y_{z^\prime}$), ($x_{z^\prime} - z_{x^\prime}$), and ($y_{x^\prime} - x_{y^\prime}$) respectively. 
+%$$q_1 = \frac{\sqrt{x_{x^\prime} + y_{y^\prime} + z_{z^\prime} + 1}}{2}$$
+%$$q_2 = \pm \frac{\sqrt{x_{x^\prime} - y_{y^\prime} - z_{z^\prime} + 1}}{2}$$
+%$$q_3 = \pm \frac{\sqrt{y_{y^\prime} - x_{x^\prime} - z_{z^\prime} + 1}}{2}$$
+%$$q_4 = \pm \frac{\sqrt{z_{z^\prime} - x_{x^\prime} - y_{y^\prime} + 1}}{2}$$
+$$q_1 = \frac{\sqrt{x_{x^\prime} + y_{y^\prime} + z_{z^\prime} + 1}}{2} \; \; \; \; q_2 = \pm \frac{\sqrt{x_{x^\prime} - y_{y^\prime} - z_{z^\prime} + 1}}{2}$$
+$$q_3 = \pm \frac{\sqrt{y_{y^\prime} - x_{x^\prime} - z_{z^\prime} + 1}}{2} \; \; \; \; q_4 = \pm \frac{\sqrt{z_{z^\prime} - x_{x^\prime} - y_{y^\prime} + 1}}{2}$$
+where the signs of $q_2$, $q_3$, and $q_4$ are the same as ($z_{y^\prime} - y_{z^\prime}$), ($x_{z^\prime} - z_{x^\prime}$), and ($y_{x^\prime} - x_{y^\prime}$) respectively. 
 
 \begin{figure}[H]
 \centering
@@ -443,11 +446,11 @@ Where the signs of $q_2$, $q_3$, and $q_4$ are the same as ($z_{y^\prime} - y_{z
 \label{fig:rob_orientation}
 \end{figure}
 
-While there are two possible ways for a user to describe the orientation of a Tool frame (i.e. Euler angels or quaternions), RobotWare really only accepts quaternions. I.e. there are functions in RAPID that will calculate the Euler angle for an axis from a quaternion orientation (see EulerZYX \cite[Sec. 2.64]{ABB:rapid_instructions}) or will calculate the quaternion from Euler angles (see OrientZYX \cite[Sec. 2.126]{ABB:rapid_instructions}), but the robot controller only accepts the quaternion orientation format for movement instructions. 
+While there are two possible ways for a user to describe the orientation of a Tool frame (i.e., Euler angels or quaternions), RobotWare really only accepts quaternions. There are functions in RAPID that will calculate the Euler angle for an axis from a quaternion orientation (see EulerZYX \cite[Sec. 2.64]{ABB:rapid_instructions}) or will calculate the quaternion from Euler angles (see OrientZYX \cite[Sec. 2.126]{ABB:rapid_instructions}), but the robot controller only accepts the quaternion orientation format for movement instructions. 
 
 \subsection{Targets and paths}
 \label{sec:Tech_Back:Rob_Move:target_path}
-The way that RAPID represents a robot's position and orientation is with the \textit{pos} and \textit{orient} data types. A pos \cite[Sec. 3.56]{ABB:rapid_instructions} is an array of three numbers representing ($x$, $y$, $z$) coordinates in $mm$ (e.g. $[10.1, 20.2, 30.3]$). An orient data type \cite[Sec. 3.52]{ABB:rapid_instructions} is an array of three four representing the ($q_1$, $q_2$, $q_3$, $q_4$) values of a quaternion (e.g. $[1, 0, 0, 0]$). RAPID stored the position and orientation together as a \textit{target} in a data type called \textit{robtarget} \cite[Sec. 3.67]{ABB:rapid_instructions}. A robtarget (portmanteau of 'robot' and 'target') consists of four data types: a pos data type, an orient data type, a \textit{confdata} \cite[Sec. 3.17]{ABB:rapid_instructions} data type, and an \textit{extjoint}\cite[Sec. 3.34]{ABB:rapid_instructions} data type. A confdata data type describes joint configurations and is dependant on the specific robot type being programmed. A extjoint data type describes the motion \textit{external joints} which are mechanical units that are external to the robot (i.e. part of the robot system but not part of the robot) that the robot controller has control of. This paper will assume that any confdata data types used are correct and that there are no external joints to control. An example of a robtarget can be found below in figure \ref{fig:RAPID_robtarget}. It is worth noting that the array of values given for the external joints are all '9E9' which indicate to the robot controller that there are no external joints to control. 
+The way that RAPID represents a robot's position and orientation is with the \textit{pos} and \textit{orient} data types. A pos \cite[Sec. 3.56]{ABB:rapid_instructions} is an array of three numbers representing ($x$, $y$, $z$) coordinates in $mm$ (e.g. $[10.1, 20.2, 30.3]$). An orient data type \cite[Sec. 3.52]{ABB:rapid_instructions} is an array of four numbers representing the ($q_1$, $q_2$, $q_3$, $q_4$) values of a quaternion (e.g. $[1, 0, 0, 0]$). RAPID stored the position and orientation together as a \textit{target} in a data type called \textit{robtarget} \cite[Sec. 3.67]{ABB:rapid_instructions}. A robtarget (portmanteau of 'robot' and 'target') consists of four data types: a pos data type, an orient data type, a \textit{confdata} \cite[Sec. 3.17]{ABB:rapid_instructions} data type, and an \textit{extjoint}\cite[Sec. 3.34]{ABB:rapid_instructions} data type. A confdata data type describes joint configurations (e.g., the quadrant of the arm angle for a certain set of robot joints) and is dependant on the specific robot type being programmed. An extjoint data type describes the motion \textit{external joints} which are mechanical units that are external to the robot (i.e. part of the robot system but not part of the robot) that the robot controller has control of. This paper will assume that any confdata data types used are correct and that there are no external joints to control. An example of a robtarget can be found below in figure \ref{fig:RAPID_robtarget}. It is worth noting that the array of values given for the external joints are all '9E9' which indicate to the robot controller that there are no external joints to control. 
 
 \lstset{language=RAPID}
 \begin{figure}[H]
@@ -466,7 +469,7 @@ CONST robtarget target_1 := [
 \label{fig:RAPID_robtarget}
 \end{figure}
 
-Movement to a specific target is handled by move instructions in RAPID. There are several different move instructions available, but this explanation will focus on the relevant parts of the \textit{MoveL} \cite[Sec. 1.158]{ABB:rapid_instructions} instruction that relate to moving to a specific position and orientation. A code example of MoveL and its relevant arguments is provided for reference in figure \ref{fig:RAPID_movel}. MoveL is used to instruct the robot to move linearly to a specific target (i.e. move the TCP in a strait line to a given position and rotate the Tool frame to a specific orientation within a reference Wobj frame). The MoveL instruction has several required data types arguments as well as many optional arguments. The required argument names and their corresponding data are presented in the format of 'name':datatype as follows: 'ToPoint':robtarget, 'Speed':\textit{speeddata}, 'Zone':\textit{zondedata}, and 'Tool':\textit{tooldata}. The example in figure \ref{fig:RAPID_movel} also includes an optional argument: '\textbackslash WObj':\textit{wobjdata}. In the example code, all of the data types given to the MoveL instruction are predefined instances of each data type. 
+Movement to a specific target is handled by move instructions in RAPID. There are several different move instructions available, but this explanation will focus on the relevant parts of the \textit{MoveL} \cite[Sec. 1.158]{ABB:rapid_instructions} instruction that relate to moving to a specific position and orientation. A code example of MoveL and its relevant arguments is provided for reference in figure \ref{fig:RAPID_movel}. MoveL is used to instruct the robot to move linearly to a specific target (i.e. move the TCP in a strait line to a given position and rotate the Tool frame to a specific orientation within a reference Wobj frame). The MoveL instruction has several required data types arguments as well as many optional arguments. The required argument names and their corresponding data are presented in the format of 'name':datatype as follows: 'ToPoint':robtarget, 'Speed':\textit{speeddata}, 'Zone':\textit{zonedata}, and 'Tool':\textit{tooldata}. The example in figure \ref{fig:RAPID_movel} also includes an optional argument: '\textbackslash WObj':\textit{wobjdata}. In the example code, all of the data types given to the MoveL instruction are predefined instances of each data type. 
 
 \lstset{language=RAPID}
 \begin{figure}[H]
@@ -479,14 +482,14 @@ MoveL  target_1 ,v100 ,fine ,tool0\WObj:=wobj0;
 \label{fig:RAPID_movel}
 \end{figure}
 
-What follows is a brief explanation of the contents of each of the predefintions used in figure \ref{fig:RAPID_movel}, but for the full details of these data types refer to the documentation on speeddata \cite[Sec. 3.76]{ABB:rapid_instructions}, zonedata \cite[Sec. 3.103]{ABB:rapid_instructions}, tooldata \cite[Sec. 3.88]{ABB:rapid_instructions}, and wobjdata \cite[Sec. 3.100]{ABB:rapid_instructions}. The argument 'v100' is a speeddata that indicates that the TCP should be moved at a velocity ($v$) of $100 \; mm/s$, the Tool frame should be rotated at an angular velocity ($\omega$) of $500^\circ /s$ and that any linear or rotational external axes should be moved at $v = 5000 \; mm /s$ and $\omega = 1000^\circ /s$ respectively. The argument 'fine' is a zonedata that indicates that this movement instruction is considered complete only when the robot has reached the exact position and orientation given by the target and all the motors have come to a stop. The argument 'tool0' is a tooldata that has been discussed in section \ref{sec:Tech_Back:Rob_Move:frames} and represents the a Tool frame where the TCP is the physical anchor point on the robot for tools (see figure \ref{fig:wobj0_tool0}). The optional argument 'wobj0' tells the robot controller to use the wobj0 frame as reference for position and orientation of the too (see figure \ref{fig:wobj0_tool0}). Because it is optional to provide the move instruction with a Wobj frame for reference (the robot controller will use the active Wobj if a frame by default is not explicitly provided) the inclusion of this optional argument has to be prefaced with the command '\textbackslash WObj:='. That is all to say, the move instruction in figure \ref{fig:RAPID_movel} and the target in figure \ref{fig:RAPID_robtarget} can be read as: 
+What follows is a brief explanation of the contents of each of the predefintions used in figure \ref{fig:RAPID_movel}, but for the full details of these data types refer to the documentation on speeddata \cite[Sec. 3.76]{ABB:rapid_instructions}, zonedata \cite[Sec. 3.103]{ABB:rapid_instructions}, tooldata \cite[Sec. 3.88]{ABB:rapid_instructions}, and wobjdata \cite[Sec. 3.100]{ABB:rapid_instructions}. The argument 'v100' is a speeddata that indicates that the TCP should be moved at a velocity ($v$) of $100 \; mm/s$, the Tool frame should be rotated at an angular velocity ($\omega$) of $500^\circ /s$ and that any linear or rotational external axes should be moved at $v = 5000 \; mm /s$ and $\omega = 1000^\circ /s$ respectively. The argument 'fine' is a zonedata that indicates that this movement instruction is considered complete only when the robot has reached the exact position and orientation given by the target and all the motors have come to a stop. The argument 'tool0' is a tooldata that has been discussed in section \ref{sec:Tech_Back:Rob_Move:frames} and represents the Tool frame in which the TCP is the physical anchor point on the robot for tools (see figure \ref{fig:wobj0_tool0}). The optional argument 'wobj0' tells the robot controller to use the wobj0 frame as reference for position and orientation of the tool (see figure \ref{fig:wobj0_tool0}). As it is optional to provide the move instruction with a Wobj frame for reference (the robot controller will use the active Wobj if a frame by default is not explicitly provided) the inclusion of this optional argument has to be prefaced with the command '\textbackslash WObj:='. That is all to say, the move instruction in figure \ref{fig:RAPID_movel} and the target in figure \ref{fig:RAPID_robtarget} can be read as: 
 \begin{itemize}
     \item Move the tool anchor point in a strait line to the point (600 $mm$, 500$mm$, 400$mm$) from the robot base where $v = 100 \; mm /s$. 
     \item Rotate the tool anchor point to the same orientation as the base coordinate system where $\omega = 500^\circ / s$. 
     \item Stop all movement when the tool anchor point is exactly at the given point and rotation before continuing. 
 \end{itemize}
 
-The final component of robot motion in RAPID is the concept of a path. A path is simply a series of movement instructions. An example of a simple path can be found in figure \ref{fig:RAPID_target_path}. In this case, a second target (target\_2) is defined, then movement instructions to the targets are combined in a procedure called Ex\_Path. The path then goes from the point (600, 500, 400) in target\_1 to the point (400, 500, 600) in target\_2. 
+The final component of robot motion in RAPID is the concept of a path. A path is simply a series of movement instructions. An example of a simple path can be found in figure \ref{fig:RAPID_target_path}. In this case, a second target (target\_2) is defined, then movement instructions to the targets are combined in a procedure called Ex\_Path. The path then goes from the current position of the robot via the point (600,500,400) in target\_1 to the point (400, 500, 600) in target\_2. 
 
 \lstset{language=RAPID}
 \begin{figure}[H]
@@ -512,7 +515,7 @@ ENDPROC
 
 \subsection{Summary of robot motion in RAPID}
 \label{sec:Tech_Back:Rob_Move:summary}
-In summary, the motion of a robot is described in RAPID by a \textbf{path}. A path is composed of a series of \textbf{move instructions} where: a \textbf{target} to move a tool to, a \textbf{speed} at which to move, a \textbf{zone} in which to stop the movement, the \textbf{tool} that should be moved, and (optionally) a \textbf{frame of reference} for the motion are provided. A \textbf{target} contains a \textbf{position} and an \textbf{orientation}. \textbf{Positions} are given as ($x$, $y$, $z$) coordinates in $mm$. \textbf{Orientations} are given in ($q_1$, $q_2$, $q_3$, $q_4$) as quaternions. 
+In summary, the motion of a robot is described in RAPID by a \textbf{path}. A path is composed of a series of \textbf{move instructions} where: a \textbf{target} to move a tool to, a \textbf{speed} at which to move, a \textbf{zone} around a target point where the robot's path is allowed to deviate from the straight line between target points, the \textbf{tool} that should be moved, and (optionally) a \textbf{frame of reference} for the motion are provided. A \textbf{target} contains a \textbf{position} and an \textbf{orientation}. \textbf{Positions} are given as ($x$, $y$, $z$) coordinates in $mm$. \textbf{Orientations} are given in ($q_1$, $q_2$, $q_3$, $q_4$) as quaternions. 
 
 
 \section{RobotStudio}
@@ -525,7 +528,7 @@ ABB supports several methods to modify RobotStudio beyond the basic functionalit
 
 \section{Google Protocol Buffers}
 \label{sec:Tech_Back:GPB}
-Google protocol buffers are "language-neutral, platform-neutral, extensible mechanism for serializing structured data" \cite{Google:Proto_Start}. To use protocol buffers, the data to be serialized is defined in a file with a .proto extension. The language guide for .proto files can be found at \cite{Google:Proto_v2_guide}. Once the protocol is defined in the .proto file, a compiler is used to create code in some supported language from the .proto file. E.g. compiling a protocol file called example.proto into python and java might result in the files example.py and example.java. With these files, a python program and a java program could use their respective files to serialize and deserialize example.proto messages \cite{Google:Proto_Api}.\par
+Google Protocol Buffers is a "language-neutral, platform-neutral, extensible mechanism for serializing structured data" \cite{Google:Proto_Start}. To use Google Protocol Buffers, the data to be serialized is defined in a file with a .proto extension. The language guide for .proto files can be found at \cite{Google:Proto_v2_guide}. Once the protocol is defined in the .proto file, a compiler is used to create code in some supported language from the .proto file. E.g. compiling a protocol file called example.proto into python and java might result in the files example.py and example.java. With these files, a python program and a java program could use their respective files to serialize and deserialize example.proto messages \cite{Google:Proto_Api}.\par
 
 ABB chose to define the EGM communication protocol with protocol buffers version 2. That is important because there was a dramatic change in version 3 that is not backwards compatible with version 2. Using protocol buffers to define the structure of the data in the UDP datagrams sent between the controller and the endpoint has one major advantage. The endpoint can be written in any language that can use protocol buffers to serialize and deserialize data. Although examples are given in the RobotWare documentation in C++ and C\#, a complete endpoint could be written in any of the languages mentioned in \cite{Google:Proto_Other}.
 
